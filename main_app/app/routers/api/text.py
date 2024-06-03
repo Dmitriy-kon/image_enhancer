@@ -20,5 +20,6 @@ async def put_file(file: UploadFile, request: Request):
     file_data = await file.read()
     broker: NatsBroker = request.state.broker
     object_storage: ObjectStorage = await broker.object_storage("storage")
+    print(filename)
 
     await object_storage.put(filename, file_data)
