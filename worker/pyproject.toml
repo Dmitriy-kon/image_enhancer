@@ -1,7 +1,7 @@
 [project]
 authors = [{ name = "Konovalov Dmitriy", email = "dkonowalow@gmail.com" }]
 dependencies = [
-    "faststream[rabbit]>=0.5.10",
+    "faststream[nats]>=0.5.10",
     "watchfiles>=0.22",]
 description = "Template for fastapi project with clean architecture and DDD"
 name = "main-app"
