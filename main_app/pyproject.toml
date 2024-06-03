@@ -7,7 +7,8 @@
 
 # [tool.poetry.dependencies]
 # python = "^3.12"
-# faststream = { extras = ["rabbit"], version = "^0.5.10" }
+# fastapi = {extras = ["all"], version = "^0.111.0"}
+# faststream = {extras = ["nats"], version = "^0.5.10"}
 
 
 # [build-system]
@@ -18,8 +19,9 @@
 [project]
 authors = [{ name = "Konovalov Dmitriy", email = "dkonowalow@gmail.com" }]
 dependencies = [
-    "faststream[rabbit]>=0.5.10",
-    "watchfiles>=0.22",]
+    "faststream[nats]>=0.5.10",
+    "watchfiles>=0.22",
+    "fastapi[all]>=0.111.0",]
 description = "Template for fastapi project with clean architecture and DDD"
 name = "main-app"
 requires-python = ">=3.12"

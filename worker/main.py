@@ -1,50 +1,48 @@
-from typing import Annotated
-from uuid import uuid4
+import asyncio
 
-from color_formatter import color_f
-from faststream import Context, FastStream
-from faststream.rabbit import (
-    ExchangeType,
-    RabbitBroker,
-    RabbitExchange,
-    RabbitMessage,
-    RabbitQueue,
-)
+from faststream import Depends, FastStream
+from faststream.nats import JStream, NatsBroker, ObjWatch
+from faststream.nats.annotations import ObjectStorage
 
-broker = RabbitBroker("amqp://rabbit")
-
+# nats_router = NatsRouter("nats://nats:4222")
+# broker = nats_router.broker
+broker = NatsBroker("nats://nats:4222")
 app = FastStream(broker)
 
-exch = RabbitExchange("test_exchange", type=ExchangeType.DIRECT, auto_delete=True)
 
-queue_1 = RabbitQueue("test", auto_delete=True)
-queue_2 = RabbitQueue("another_queue", auto_delete=True)
-
-CorrelationId = Annotated[str, Context("message.correlation_id")]
+@broker.subscriber(stream="stream", subject="texter", deliver_policy="new")
+async def put_text(text: str):
+    print(f"{text}, from broker")
 
 
-# @broker.publisher(queue_2, exchange=exch)
-@broker.subscriber(queue_1, exchange=exch)
-@broker.publisher(queue_2, exchange=exch)
-async def base_handler(
-    # msg: RabbitMessage,
-    name: str,
-    user_id: int,
-    cor_id: str = Context("message.correlation_id"),
-):
-    # print(color_f.colorize_blue(f"[ ] worker message gain with id: {cor_id}"))
-
-    # print(
-    #     color_f.colorize_green(
-    #         f"[ ]Hello {name}, from worker with id {user_id} and your cor_id is {cor_id}"
-    #     )
-    # )
-    return name
+def write_file(filename: str, data: bytes):
+    with open(f"/app/data/{filename}", "wb") as f:
+        f.write(data)
 
 
-# @app.after_startup
-# async def test():
-#     data = {"name": "Dime", "user_id": 212}
-#     _id = uuid4().hex
-#     print(color_f.colorize_green(f"[ ] main_app message publish with id: {id}"))
-#     await broker.publish(data, exchange=exch, queue=queue_1, correlation_id=_id)
+@broker.subscriber("storage", obj_watch=True, deliver_policy="new")
+async def file_handler(filename: str):
+    print(filename)
+    object_storage: ObjectStorage = await broker.object_storage("storage")
+    print(await object_storage.list())
+    data = await object_storage.delete(filename)
+    # file = await object_storage.get(filename)
+
+    # await asyncio.to_thread(write_file, filename, file.data)
+    # if data:
+    #     print(data.data)
+    #     print(data.info)
+
+    # await storage.delete(filename)
+
+    # object_storage: ObjectStorage = await broker.object_storage("storage")
+    # file = await object_storage.get(filename)
+    # # print(await storage.list())
+
+    # await asyncio.to_thread(write_file, filename, file.data)
+    # await object_storage.delete(filename)
+
+
+@app.after_startup
+async def after_startup():
+    await broker.object_storage("storage")
