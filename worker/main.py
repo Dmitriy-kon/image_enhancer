@@ -1,18 +1,26 @@
 import asyncio
 
-from faststream import Depends, FastStream
-from faststream.nats import JStream, NatsBroker, ObjWatch
-from faststream.nats.annotations import ObjectStorage
+import nats
+from nats.js.api import ObjectMeta
+from nats.js.errors import BucketNotFoundError
+from nats.js.object_store import ObjectStore
 
-# nats_router = NatsRouter("nats://nats:4222")
-# broker = nats_router.broker
-broker = NatsBroker("nats://nats:4222")
-app = FastStream(broker)
+servers = ["nats://nats:4222"]
+bucket_name = "storage"
 
 
-@broker.subscriber(stream="stream", subject="texter", deliver_policy="new")
-async def put_text(text: str):
-    print(f"{text}, from broker")
+async def connect_to_nats():
+    nc = await nats.connect(servers)
+    return nc.jetstream()
+
+
+async def get_object_storage(js) -> ObjectStore:
+    try:
+        object_storage = await js.object_store(bucket_name)
+    except BucketNotFoundError:
+        object_storage = await js.create_object_store(bucket_name)
+
+    return object_storage
 
 
 def write_file(filename: str, data: bytes):
@@ -20,29 +28,15 @@ def write_file(filename: str, data: bytes):
         f.write(data)
 
 
-@broker.subscriber("storage", obj_watch=True, deliver_policy="new")
-async def file_handler(filename: str):
-    print(filename)
-    object_storage: ObjectStorage = await broker.object_storage("storage")
-    print(await object_storage.list())
-    file = await object_storage.get(filename)
-    await object_storage.delete(filename)
+async def main():
+    js = await connect_to_nats()
+    obj_store = await get_object_storage(js)
+    print(await obj_store.status())
 
-    # await asyncio.to_thread(write_file, filename, file.data)
-    # if data:
-    #     print(data.data)
-    #     print(data.info)
-
-    # await storage.delete(filename)
-
-    # object_storage: ObjectStorage = await broker.object_storage("storage")
-    # file = await object_storage.get(filename)
-    # # print(await storage.list())
-
-    # await asyncio.to_thread(write_file, filename, file.data)
-    # await object_storage.delete(filename)
+    for file in await obj_store.list():
+        await asyncio.to_thread(write_file, file.name, await obj_store.get(file.name))
+        await obj_store.delete(file.name)
 
 
-@app.after_startup
-async def after_startup():
-    await broker.object_storage("storage")
+if __name__ == "__main__":
+    asyncio.run(main())
