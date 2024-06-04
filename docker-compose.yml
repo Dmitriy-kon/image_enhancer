@@ -42,12 +42,12 @@ services:
   nats:
     image: nats:latest
     # command: --js --debug --trace --sd /data -p 4222 -m 8222
-    command: --js --sd /data -p 4222 -m 8222
+    command: -js --sd /data -p 4222 -m 8222
     ports:
       - 4222:4222
       - 8222:8222
-    volumes:
-      - jetstream:/data
+    # volumes:
+    #   - jetstream:/data
     # healthcheck:
     #   test: curl --fail http://localhost:8222/ || exit 1
     #   interval: 10s
@@ -56,4 +56,4 @@ services:
 
 volumes:
   rabbit:
-  jetstream:
+  # jetstream:
