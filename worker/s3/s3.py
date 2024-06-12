@@ -2,8 +2,8 @@ from contextlib import asynccontextmanager
 
 import botocore
 from aiobotocore.session import get_session
-from botocore.exceptions import ClientError
 from botocore.config import Config
+from botocore.exceptions import ClientError
 
 
 class S3Client:
@@ -19,17 +19,17 @@ class S3Client:
             "aws_secret_access_key": secret_key,
             "endpoint_url": endpoint_url,
         }
-        self.sig_conf = Config(
+        self.signed_conf = Config(
             signature_version=botocore.UNSIGNED,
         )
         self.bucket_name = bucket_name
         self.session = get_session()
 
-
-
     @asynccontextmanager
     async def get_client(self):
-        async with self.session.create_client("s3", **self.config, config=self.sig_conf) as client:
+        async with self.session.create_client(
+            "s3", **self.config, config=self.signed_conf
+        ) as client:
             yield client
 
     async def create_bucket_if_not_exists(self):

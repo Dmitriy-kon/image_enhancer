@@ -5,11 +5,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
   sendButton.onclick = function () {
     let file = fileInput.files[0];
-    let oldFilename = file.name;
+    // if (!file) {
+    //   alert("Файл не выбран");
+    //   return
+    // }
     let newFilename = filenameInput.value;
+
     if (file && newFilename) {
+      let oldFilename = file.name;
       var ws = new WebSocket(
-        "ws://localhost:8000/ws/file/?filename=" + encodeURIComponent(`${newFilename}:${oldFilename}`)
+        "ws://localhost:8000/ws/file/?filename=" +
+          encodeURIComponent(`${newFilename}:${oldFilename}`)
       );
       ws.binaryType = "arraybuffer";
       ws.onopen = function () {
@@ -21,10 +27,11 @@ document.addEventListener("DOMContentLoaded", function () {
       };
       let filename_rec = "";
       ws.onmessage = function (event) {
-
-        if (typeof event.data == 'string') {
+        if (typeof event.data == "string") {
           filename_rec = event.data;
-          console.log(`Сервер ответил: ${filename_rec} and type ${typeof event.data}`);
+          console.log(
+            `Сервер ответил: ${filename_rec} and type ${typeof event.data}`
+          );
         } else {
           let arrayBuffer = event.data;
           let blob = new Blob([arrayBuffer], {

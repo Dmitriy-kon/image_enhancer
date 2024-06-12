@@ -1,10 +1,5 @@
-from typing import TYPE_CHECKING
-
-from fastapi import APIRouter, Request, UploadFile
+from fastapi import APIRouter, Request
 from fastapi.templating import Jinja2Templates
-
-if TYPE_CHECKING:
-    from faststream.nats.annotations import NatsBroker, ObjectStorage
 
 index_router = APIRouter(tags=["index"], prefix="")
 
@@ -16,6 +11,7 @@ async def main_page(request: Request):
     return templates.TemplateResponse(
         request=request, name="index.html", context={"request": request}
     )
+
 
 @index_router.get("/ws")
 async def websocket_upload(request: Request):

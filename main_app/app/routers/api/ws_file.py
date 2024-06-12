@@ -34,6 +34,13 @@ async def websocket_upload_file(filename: str, ws: WebSocket):
     async for data in ws.iter_bytes():
         await ws.send_text(newfilename)
         await ws.send_bytes(data)
+
+        broker: NatsBroker = ws.state.broker
+        object_storage: ObjectStorage = await broker.object_storage(
+            bucket="storage", ttl=20
+        )
+
+        await object_storage.put(newfilename, data)
     # try:
     # while True:
     #     data = await ws.receive_text()
