@@ -2,7 +2,8 @@
 authors = [{ name = "Konovalov Dmitriy", email = "dkonowalow@gmail.com" }]
 dependencies = [
     "faststream[nats]>=0.5.10",
-    "watchfiles>=0.22",]
+    "watchfiles>=0.22",
+    "aiobotocore>=2.13.0",]
 description = "Template for fastapi project with clean architecture and DDD"
 name = "main-app"
 requires-python = ">=3.12"

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Форма отправки файла</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='/styles.css') }}" />
+  </head>
+  <body>
+    <div class="form-container">
+      <form
+        id="file-upload-form"
+        action="/text/file/"
+        method="post"
+        enctype="multipart/form-data"
+      >
+        <input
+          type="text"
+          name="filename"
+          placeholder="Введите имя файла"
+          required
+        />
+        <input type="file" name="file" required />
+        <button type="submit">Отправить</button>
+      </form>
+      <p class="menu"><a href="/ws">Перейти к загрузке файла через WebSocket</a></p>
+    </div>
+    <script src="{{ url_for('static', path='/script.js') }}"></script>
+  </body>
+</html>

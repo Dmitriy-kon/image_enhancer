@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Загрузка файла через WebSocket</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='/styles.css') }}">
+</head>
+<body>
+    <div class="form-container">
+        <div class="ws-container">
+            <input type="text" id="filename" placeholder="Введите имя файла" required>
+            <input type="file" id="file" required>
+            <button id="send">Отправить</button>
+        </div>
+        <p class="menu"><a href="/">Вернуться на главную страницу</a></p>
+    </div>
+    <script src="{{ url_for('static', path='/websocket_script.js') }}"></script>
+</body>
+</html>
