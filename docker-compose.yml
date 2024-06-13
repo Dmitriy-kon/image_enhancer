@@ -3,7 +3,6 @@ services:
   python_external:
     build: ./main_app
     container_name: python_cont
-
     command: uvicorn --factory app.main.main:create_app --reload --host 0.0.0.0 --port 8008
     ports:
       - 8000:8008
@@ -11,7 +10,13 @@ services:
       - ./main_app:/app
     depends_on:
       - nats
-        # condition: service_healthy
+    healthcheck:
+      test: curl --fail http://python_external/healthcheck
+      interval: 2s
+      retries: 4
+      # timeout: 10s
+    networks:
+      - mynetwork
 
   worker:
     build: ./worker
@@ -24,13 +29,14 @@ services:
     depends_on:
       - nats
       - python_external
-      - createbuckets
+      - minio_client
+    networks:
+      - mynetwork
 
   minio:
     image: minio/minio:latest
     container_name: minio
     command: minio server /data --console-address ":9001"
-    # command: server /data
     environment:
       MINIO_ROOT_USER: minioadmin
       MINIO_ROOT_PASSWORD: minioadmin
@@ -39,18 +45,30 @@ services:
       - "9001:9001"
     volumes:
       - data1:/data
+    depends_on:
+      - python_external
+    networks:
+      - mynetwork
 
-  createbuckets:
-    image: minio/mc
+  minio_client:
+    # image: minio/mc
+    build: ./scripts/mc
+    container_name: minio_client
     depends_on:
       - minio
-    entrypoint: >
-      /bin/sh -c "
-      /usr/bin/mc alias set myminio http://minio:9000 minioadmin minioadmin;
-      /usr/bin/mc mb myminio/storage;
-      /usr/bin/mc anonymous set public myminio/storage;
-      exit 0;
-      "
+    # entrypoint: >
+    #   /bin/sh -c "
+    #   sleep 5;
+    #   /usr/bin/mc alias set myminio http://minio:9000 minioadmin minioadmin;
+    #   /usr/bin/mc mb myminio/storage;
+    #   /usr/bin/mc anonymous set public myminio/storage;
+    #   /usr/bin/mc admin config set myminio/ notify_webhook:primary endpoint="http://host.docker.internal:8000/minio-event" queue_limit="10";
+    #   /usr/bin/mc admin service restart myminio;
+    #   /usr/bin/mc event add myminio/storage arn:minio:sqs::primary:webhook --event put;
+    #   exit 0;
+    #   "
+    networks:
+      - mynetwork
 
     # rabbit:
     #   image: rabbitmq:3.13-management
@@ -80,8 +98,13 @@ services:
     #   interval: 10s
     #   timeout: 20s
     #   retries: 3
+    networks:
+      - mynetwork
 
 volumes:
   rabbit:
   data1:
   # jetstream:
+networks:
+  mynetwork:
+    driver: bridge
