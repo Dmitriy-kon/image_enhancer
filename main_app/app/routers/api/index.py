@@ -18,3 +18,10 @@ async def websocket_upload(request: Request):
     return templates.TemplateResponse(
         request=request, name="webscocket.html", context={"request": request}
     )
+
+
+@index_router.get("/ws-link")
+async def websocket_link(request: Request):
+    return templates.TemplateResponse(
+        request=request, name="webscocket_link.html", context={"request": request}
+    )

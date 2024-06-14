@@ -2,6 +2,7 @@ from contextlib import asynccontextmanager
 
 import botocore
 from aiobotocore.session import get_session
+from aiobotocore.config import AioConfig
 from botocore.exceptions import ClientError
 
 
@@ -17,14 +18,16 @@ class S3Client:
             "aws_access_key_id": access_key,
             "aws_secret_access_key": secret_key,
             "endpoint_url": endpoint_url,
-            "signature_version": botocore.UNSIGNED,
+            # "signature_version": botocore.UNSIGNED,
         }
         self.bucket_name = bucket_name
         self.session = get_session()
 
     @asynccontextmanager
     async def get_client(self):
-        async with self.session.create_client("s3", **self.config) as client:
+        async with self.session.create_client(
+            "s3", config=AioConfig(signature_version=botocore.UNSIGNED), **self.config
+        ) as client:
             yield client
 
     async def upload_file(
@@ -56,7 +59,7 @@ class S3Client:
             async with self.get_client() as client:
                 return await client.generate_presigned_url(
                     "get_object",
-                    ExpiresIn=0,
+                    ExpiresIn=3600,
                     Params={"Bucket": self.bucket_name, "Key": object_name},
                 )
         except ClientError as e:

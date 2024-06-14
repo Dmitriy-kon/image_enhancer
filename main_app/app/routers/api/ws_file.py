@@ -1,7 +1,8 @@
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-from fastapi import APIRouter, Request, UploadFile, WebSocket, WebSocketDisconnect
+from app.adapters.ws.ws_client import webscocket_client
+from fastapi import APIRouter, WebSocket, WebSocketDisconnect
 
 if TYPE_CHECKING:
     from faststream.nats.annotations import NatsBroker, ObjectStorage
@@ -30,6 +31,8 @@ async def websocket_upload_file(filename: str, ws: WebSocket):
 
     new_filename, old_filename = (Path(i) for i in filename.split(":"))
     newfilename = new_filename.with_suffix(old_filename.suffix).name
+
+    webscocket_client.add_file(newfilename, ws)
 
     # async for data in ws.iter_bytes():
     #     # await ws.send_text(newfilename)
