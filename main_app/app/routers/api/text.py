@@ -2,6 +2,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Annotated
 
 from fastapi import APIRouter, Form, Request, UploadFile
+from nats.js.api import ObjectMeta
 
 if TYPE_CHECKING:
     from faststream.nats.annotations import NatsBroker, ObjectStorage
@@ -17,7 +18,10 @@ async def put_text(text: str, request: Request):
 
 @text_router.post("/file/")
 async def put_file(
-    filename: Annotated[str, Form()], file: UploadFile, request: Request
+    filename: Annotated[str, Form()],
+    metadata: Annotated[str, Form()],
+    file: UploadFile,
+    request: Request,
 ):
     if filename:
         filename_suffix = Path(file.filename).suffix
@@ -25,10 +29,19 @@ async def put_file(
     else:
         filename = file.filename
 
+    print(filename)
+    # data_headers = file.headers
+    print(file.headers)
+    print(metadata)
+
+    data_headers = {"grayscale": True}
+
     file_data = await file.read()
     broker: NatsBroker = request.state.broker
     object_storage: ObjectStorage = await broker.object_storage(
         bucket="storage", ttl=20
     )
 
-    await object_storage.put(filename, file_data)
+    await object_storage.put(
+        name=filename, data=file_data, meta=ObjectMeta(headers=metadata)
+    )

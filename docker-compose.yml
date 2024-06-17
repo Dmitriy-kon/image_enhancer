@@ -45,8 +45,8 @@ services:
       - "9001:9001"
     volumes:
       - data1:/data
-    depends_on:
-      - python_external
+    # depends_on:
+    #   - python_external
     networks:
       - mynetwork
 

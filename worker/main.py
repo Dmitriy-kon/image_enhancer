@@ -37,6 +37,11 @@ def write_file(filename: str, data: bytes):
 async def file_handler(filename: str, object_storage: ObjectStorage):
     print(filename)
     file = await object_storage.get(filename)
+    headers = file.info.headers
+    
+    # print(type(headers.get("grayscale")), headers.get("grayscale"))
+    print(headers)
+    
     print([i.name for i in await object_storage.list()])
 
     await s3_storage_inner.upload_file(filename, file.data)

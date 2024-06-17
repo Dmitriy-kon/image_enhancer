@@ -1,21 +1,32 @@
 <!DOCTYPE html>
 <html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Загрузка файла через WebSocket</title>
-    <link rel="stylesheet" href="{{ url_for('static', path='/styles.css') }}">
-</head>
-<body>
+    <link rel="stylesheet" href="{{ url_for('static', path='/output.css') }}" />
+  </head>
+  <body>
     <div class="form-container">
+      <div class="flex flex-col">
         <div class="ws-container">
-            <input type="text" id="filename" placeholder="Введите имя файла" required>
-            <input type="file" id="file" required>
+          <input
+            type="text"
+            id="filename"
+            placeholder="Введите имя файла"
+            required
+          />
+          <input type="file" id="file" required />
+          <div id="mybuttons" class="flex flex-row justify-between px-1">
             <button id="send">Отправить</button>
+          </div>
         </div>
-        <p class="menu"><a href="/">Вернуться на главную страницу</a></p>
-        <p class="menu"><a href="/ws-link">Вернуться на websocket link</a></p>
+        <div class="flex items-center gap-3 mt-4 px-1">
+            <p class="menu"><a href="/">Вернуться на главную страницу</a></p>
+            <p class="menu"><a href="/ws-link">Вернуться на websocket link</a></p>
+        </div>
+      </div>
     </div>
-    <script src="{{ url_for('static', path='/websocket_script.js') }}"></script>
-</body>
+    <script src="{{ url_for('static', path='/wsl_ink_script.js') }}"></script>
+  </body>
 </html>

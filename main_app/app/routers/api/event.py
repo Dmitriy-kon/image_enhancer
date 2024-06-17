@@ -23,7 +23,7 @@ async def get_event(request: Request):
 
     url = await s3_storage_out.get_url_for_file(filename)
     await ws.send_text(url)
+    webscocket_client.remove_file(filename)
     print(url)
-    
 
     # pprint(data.get("Records")[0].get("s3").get("object").get("key"))

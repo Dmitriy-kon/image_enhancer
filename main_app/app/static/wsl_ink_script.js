@@ -30,19 +30,36 @@ document.addEventListener("DOMContentLoaded", function () {
         if (typeof event.data === "string") {
           // Предполагаем, что сервер отправляет URL в виде строки
           let downloadUrl = event.data;
+          let buttonsContainer = document.getElementById("mybuttons");
           let downloadButton = document.createElement("button");
           downloadButton.textContent = "Скачать файл";
           downloadButton.onclick = function () {
             window.location.href = downloadUrl; // Перенаправление на URL для скачивания файла
-            downloadButton.remove();
+            downloadButton.remove(); // Удаление кнопки после нажатия
           };
           // Добавляем кнопку справа от кнопки отправить
-          let sendButton = document.getElementById("send");
-          sendButton.parentNode.insertBefore(downloadButton, sendButton.nextSibling);
+          buttonsContainer.appendChild(downloadButton);
         } else {
           alert(`Это не URL, а ${typeof event.data}`);
         }
       };
+      // ws.onmessage = function (event) {
+      //   if (typeof event.data === "string") {
+      //     // Предполагаем, что сервер отправляет URL в виде строки
+      //     let downloadUrl = event.data;
+      //     let downloadButton = document.createElement("button");
+      //     downloadButton.textContent = "Скачать файл";
+      //     downloadButton.onclick = function () {
+      //       window.location.href = downloadUrl; // Перенаправление на URL для скачивания файла
+      //       downloadButton.remove();
+      //     };
+      //     // Добавляем кнопку справа от кнопки отправить
+      //     let sendButton = document.getElementById("send");
+      //     sendButton.parentNode.insertBefore(downloadButton, sendButton.nextSibling);
+      //   } else {
+      //     alert(`Это не URL, а ${typeof event.data}`);
+      //   }
+      // };
       ws.onerror = function (event) {
         console.error("Ошибка WebSocket: ", event);
       };

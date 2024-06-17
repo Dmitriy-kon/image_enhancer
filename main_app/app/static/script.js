@@ -5,7 +5,10 @@ document.addEventListener('DOMContentLoaded', function() {
         var formData = new FormData(form);
         fetch('/text/file/', {
             method: 'POST',
-            body: formData
+            body: formData,
+            headers: {
+                
+            }
         }).then(response => {
             return response.text();
         }).then(data => {
