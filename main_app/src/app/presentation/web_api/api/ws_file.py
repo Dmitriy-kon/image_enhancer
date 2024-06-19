@@ -1,39 +1,17 @@
-from pathlib import Path
-from typing import TYPE_CHECKING
+from typing import Annotated
 
-from app.adapters.ws.ws_client import webscocket_client
-from fastapi import APIRouter, WebSocket, WebSocketDisconnect
-from nats.js.api import ObjectMeta
-
-if TYPE_CHECKING:
-    from faststream.nats.annotations import NatsBroker, ObjectStorage
+from app.application.add_file_event import AddWsEvent
+from fastapi import APIRouter, Depends, WebSocket, WebSocketDisconnect
 
 ws_router = APIRouter(tags=["ws"], prefix="/ws")
 
 
-@ws_router.websocket("/")
-async def websocket_upload(name: str, ws: WebSocket):
-    print(name)
-    await ws.accept()
-
-    try:
-        async for data in ws.iter_text():
-            await ws.send_text(f"Message text was: {data}")
-        # while True:
-        #     data = await ws.receive_text()
-        #     await ws.send_text(data)
-    except WebSocketDisconnect:
-        pass
-
-
 @ws_router.websocket("/file/")
-async def websocket_upload_file(filename: str, ws: WebSocket):
+async def websocket_upload_file(
+    filename: str, ws: WebSocket, interactor: Annotated[AddWsEvent, Depends()]
+):
     await ws.accept()
-
-    new_filename, old_filename = (Path(i) for i in filename.split(":"))
-    newfilename = new_filename.with_suffix(old_filename.suffix).name
-
-    webscocket_client.add_file(newfilename, ws)
+    await interactor(filename, ws)
     await ws.receive()
     # async for data in ws.iter_bytes():
     #     data_headers = {

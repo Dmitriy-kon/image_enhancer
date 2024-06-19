@@ -1,7 +1,6 @@
 from contextlib import asynccontextmanager
 
 import botocore
-import aiobotocore
 from aiobotocore.config import AioConfig
 from aiobotocore.session import get_session
 from botocore.exceptions import ClientError

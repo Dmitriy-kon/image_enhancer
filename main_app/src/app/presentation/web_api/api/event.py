@@ -1,5 +1,3 @@
-from pprint import pprint
-
 from app.adapters.s3.s3_client import S3Client
 from app.adapters.ws.ws_client import webscocket_client
 from fastapi import APIRouter, Request
@@ -18,15 +16,14 @@ minio_router = APIRouter(tags=["minio-event"])
 @minio_router.post("/minio-event")
 async def get_event(request: Request):
     data = await request.json()
+
     filename = data.get("Records")[0].get("s3").get("object").get("key")
     ws = webscocket_client.get_file(filename)
     if not ws:
         return
 
     url = await s3_storage_out.get_url_for_file(filename)
+
     await ws.send_text(url)
     webscocket_client.remove_file(filename)
-    ws.close()
-    print(url)
-
-    # pprint(data.get("Records")[0].get("s3").get("object").get("key"))
+    await ws.close()
