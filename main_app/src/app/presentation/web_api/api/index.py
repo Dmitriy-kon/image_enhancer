@@ -3,7 +3,7 @@ from fastapi.templating import Jinja2Templates
 
 index_router = APIRouter(tags=["index"], prefix="")
 
-templates = Jinja2Templates(directory="app/templates")
+templates = Jinja2Templates(directory="src/app/presentation/templates")
 
 
 @index_router.get("/")

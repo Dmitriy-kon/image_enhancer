@@ -1,11 +1,11 @@
 from contextlib import asynccontextmanager
 
-from app.routers.api.event import minio_router
-from app.routers.api.healtcheck import health_router
-from app.routers.api.index import index_router
-from app.routers.api.text import text_router as api_router
-from app.routers.api.ws_file import ws_router
-from app.routers.broker.text import nats_router
+from app.presentation.web_api.api.event import minio_router
+from app.presentation.web_api.api.healtcheck import health_router
+from app.presentation.web_api.api.images import image_router
+from app.presentation.web_api.api.index import index_router
+from app.presentation.web_api.api.ws_file import ws_router
+from app.presentation.web_api.broker.text import nats_router
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
@@ -21,7 +21,7 @@ from fastapi.staticfiles import StaticFiles
 
 @nats_router.after_startup
 async def after_startup(app) -> None:
-    await nats_router.broker.object_storage(bucket="storage", ttl=50)
+    await nats_router.broker.object_storage(bucket="storage", ttl=60)
 
 
 def get_lifespan() -> None:
@@ -29,7 +29,10 @@ def get_lifespan() -> None:
 
 
 def mount_styles(app: FastAPI) -> None:
-    app.mount("/static", StaticFiles(directory="app/static"), name="static")
+    app.mount(
+        "/static", StaticFiles(directory="src/app/presentation/static"), name="static"
+    )
+
 
 def add_middlewares(app: FastAPI) -> None:
     app.add_middleware(
@@ -40,9 +43,10 @@ def add_middlewares(app: FastAPI) -> None:
         allow_headers=["*"],
     )
 
+
 def init_routers(app: FastAPI) -> None:
     app.include_router(nats_router)
-    app.include_router(api_router)
+    app.include_router(image_router)
     app.include_router(ws_router)
     app.include_router(index_router)
     app.include_router(minio_router)

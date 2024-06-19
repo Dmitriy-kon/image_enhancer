@@ -7,9 +7,10 @@
 
 # [tool.poetry.dependencies]
 # python = "^3.12"
-# fastapi = {extras = ["all"], version = "^0.111.0"}
-# faststream = {extras = ["nats"], version = "^0.5.10"}
+# fastapi = { extras = ["all"], version = "^0.111.0" }
+# faststream = { extras = ["nats"], version = "^0.5.10" }
 # aiobotocore = "^2.13.0"
+# dishka = "^1.2.0"
 
 
 # [build-system]
@@ -23,8 +24,9 @@ dependencies = [
     "faststream[nats]>=0.5.10",
     "watchfiles>=0.22",
     "fastapi[all]>=0.111.0",
-    "aiobotocore>=2.13.0",]
-description = "Template for fastapi project with clean architecture and DDD"
-name = "main-app"
+    "aiobotocore>=2.13.0",
+    "dishka>=1.2.0",]
+description = "image processing service"
+name = "image-processing-service"
 requires-python = ">=3.12"
 version = "0.1.0"

@@ -1,8 +1,9 @@
 from contextlib import asynccontextmanager
 
 import botocore
-from aiobotocore.session import get_session
+import aiobotocore
 from aiobotocore.config import AioConfig
+from aiobotocore.session import get_session
 from botocore.exceptions import ClientError
 
 
@@ -18,7 +19,6 @@ class S3Client:
             "aws_access_key_id": access_key,
             "aws_secret_access_key": secret_key,
             "endpoint_url": endpoint_url,
-            # "signature_version": botocore.UNSIGNED,
         }
         self.bucket_name = bucket_name
         self.session = get_session()

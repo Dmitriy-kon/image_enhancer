@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", function () {
     formData.append("file", file);
     formData.append("filename", newFilename);
     formData.append("metadata", JSON.stringify(metadata));
-    fetch("/text/file/", {
+    fetch("/image/", {
       method: "POST",
       body: formData,
     })

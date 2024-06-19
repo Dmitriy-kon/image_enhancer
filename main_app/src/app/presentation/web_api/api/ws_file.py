@@ -56,7 +56,7 @@ async def websocket_upload_file(filename: str, ws: WebSocket):
 
     #         data_headers = {
     #             "grayscale": True}
-            
+
     #         await object_storage.put(
     #             name=newfilename, data=data, meta=ObjectMeta(headers=data_headers)
     #         )

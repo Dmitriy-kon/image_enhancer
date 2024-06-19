@@ -14,7 +14,7 @@ COPY pyproject.toml .
 # COPY conf conf/
 
 # RUN chmod +x scripts/start.sh
-
+COPY src src/
 
 RUN pip install -e .
 
