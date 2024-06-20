@@ -2,7 +2,7 @@ import io
 
 from entities.image import Image
 from PIL import Image as Img
-from PIL import ImageOps
+from PIL import ImageOps, ImageEnhance
 
 
 class ImageProcessor:
@@ -23,6 +23,10 @@ class ImageProcessor:
         self.img = ImageOps.contain(
             self.img, (width, height), method=Img.Resampling.LANCZOS
         )
+
+    def add_saturation(self, factor: int) -> int:
+        factor = factor / 100 + 1
+        self.img = ImageEnhance.Color(self.img).enhance(factor=factor)
 
     def save(self) -> Image:
         byte_array = io.BytesIO()

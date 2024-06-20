@@ -25,6 +25,8 @@ class ImageService:
                     image.convert_data.scale.width,
                     image.convert_data.scale.height,
                 )
+            if image.convert_data.saturation:
+                ims.add_saturation(image.convert_data.saturation)
             res_image = ims.save()
 
         return res_image
