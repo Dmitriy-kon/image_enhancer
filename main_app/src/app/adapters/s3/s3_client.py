@@ -1,8 +1,9 @@
 from contextlib import asynccontextmanager
+from typing import Annotated, AsyncIterable
 
 import botocore
 from aiobotocore.config import AioConfig
-from aiobotocore.session import get_session
+from aiobotocore.session import AioBaseClient, get_session
 from botocore.exceptions import ClientError
 
 
@@ -23,7 +24,7 @@ class S3Client:
         self.session = get_session()
 
     @asynccontextmanager
-    async def get_client(self):
+    async def get_client(self) -> AsyncIterable[AioBaseClient]:
         async with self.session.create_client(
             "s3", config=AioConfig(signature_version=botocore.UNSIGNED), **self.config
         ) as client:
@@ -53,7 +54,10 @@ class S3Client:
         except ClientError as e:
             print(f"Error deleting file: {e}")
 
-    async def get_url_for_file(self, object_name: str):
+    async def get_url_for_file(
+        self,
+        object_name: str,
+    ):
         try:
             async with self.get_client() as client:
                 return await client.generate_presigned_url(
@@ -61,5 +65,6 @@ class S3Client:
                     ExpiresIn=3600,
                     Params={"Bucket": self.bucket_name, "Key": object_name},
                 )
+
         except ClientError as e:
             print(f"Error getting url: {e}")

@@ -1,3 +1,5 @@
+from typing import Annotated
+
 from app.adapters.s3.s3_client import S3Client
 from app.adapters.ws.ws_client import webscocket_client
 from fastapi import APIRouter, Request
@@ -16,7 +18,6 @@ minio_router = APIRouter(tags=["minio-event"])
 @minio_router.post("/minio-event")
 async def get_event(request: Request):
     data = await request.json()
-
     filename = data.get("Records")[0].get("s3").get("object").get("key")
     ws = webscocket_client.get_file(filename)
     if not ws:
