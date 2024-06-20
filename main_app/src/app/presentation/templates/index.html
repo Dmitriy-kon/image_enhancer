@@ -14,17 +14,24 @@
             type="text"
             id="filename"
             placeholder="Введите имя файла"
+            class="outline-1 outline-[#615fe7]"
             required
           />
-          <input type="file" id="file" required />
+          <input type="file" id="file" accept="image/*" required />
           <div class="flex flex-col justify-between px-1 gap-3 content-center">
-          <div class="flex flex-row gap-4">
+          <div class="flex flex-row gap-4 text-base font-semibold">
             <label for="grayscale">Grayscale</label>
             <input type="checkbox" id="grayscale" />
           </div>
-          <input class="px-3 py-1 w-40" type="number" id="scaleWidth" placeholder="Ширина" required />
-          <input class="px-3 py-1 w-40"  type="number" id="scaleHeight" placeholder="Высота" required />
-          <input class="px-3 py-1 w-40"  type="number" id="saturation" placeholder="Насыщенность" required />
+          <div class="flex flex-row gap-4 justify-between content-center ">
+            <div class="flex gap-4 items-center text-base font-semibold">
+              <label for="proportional">Пропорционально</label>
+              <input type="checkbox" id="proportional" />
+            </div>
+            <input class="px-3 py-1 w-40 outline-1 outline-[#615fe7] border-2 rounded border-solid border-[#d3e2f4]" type="number" id="scaleWidth" placeholder="Ширина" required />
+            <input class="px-3 py-1 w-40 outline-1 outline-[#615fe7] border-2 rounded border-solid border-[#d3e2f4]"  type="number" id="scaleHeight" placeholder="Высота" required />
+          </div>
+          <input class="px-3 py-1 w-40 outline-1 outline-[#615fe7] border-2 rounded border-solid border-[#d3e2f4]"  type="number" id="saturation" placeholder="Насыщенность" required />
           </div>
           <div id="mybuttons" class="flex flex-row justify-between px-1">
             <button type="submit" id="send">Отправить</button>

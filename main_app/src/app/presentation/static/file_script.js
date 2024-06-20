@@ -87,3 +87,42 @@ document.addEventListener("DOMContentLoaded", function () {
   };
 });
 
+let originalWidth, originalHeight;
+
+document.getElementById('file').addEventListener('change', function(event) {
+  let file = event.target.files[0];
+  if (file && file.type.startsWith('image/')) {
+    let img = new Image();
+    img.onload = function() {
+      originalWidth = this.width;
+      originalHeight = this.height;
+      document.getElementById('scaleWidth').value = originalWidth;
+      document.getElementById('scaleHeight').value = originalHeight;
+    };
+    img.src = URL.createObjectURL(file);
+  }
+});
+
+function updateProportionalSize(inputId, originalSize) {
+  if (document.getElementById('proportional').checked) {
+    let scaleWidth = document.getElementById('scaleWidth');
+    let scaleHeight = document.getElementById('scaleHeight');
+    let ratio = originalWidth / originalHeight;
+    
+    if (inputId === 'scaleWidth') {
+      let newWidth = parseInt(scaleWidth.value, 10);
+      scaleHeight.value = Math.round(newWidth / ratio);
+    } else if (inputId === 'scaleHeight') {
+      let newHeight = parseInt(scaleHeight.value, 10);
+      scaleWidth.value = Math.round(newHeight * ratio);
+    }
+  }
+}
+
+document.getElementById('scaleWidth').addEventListener('input', function() {
+  updateProportionalSize('scaleWidth', originalWidth);
+});
+
+document.getElementById('scaleHeight').addEventListener('input', function() {
+  updateProportionalSize('scaleHeight', originalHeight);
+});

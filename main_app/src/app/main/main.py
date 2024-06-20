@@ -1,10 +1,6 @@
 from contextlib import asynccontextmanager
 
-from app.presentation.web_api.api.event import minio_router
-from app.presentation.web_api.api.healtcheck import health_router
-from app.presentation.web_api.api.images import image_router
-from app.presentation.web_api.api.index import index_router
-from app.presentation.web_api.api.ws_file import ws_router
+from app.presentation.web_api.api.root import root_router
 from app.presentation.web_api.broker.text import nats_router
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -28,13 +24,13 @@ def get_lifespan() -> None:
     return nats_router.lifespan_context
 
 
-def mount_styles(app: FastAPI) -> None:
+def init_styles(app: FastAPI) -> None:
     app.mount(
         "/static", StaticFiles(directory="src/app/presentation/static"), name="static"
     )
 
 
-def add_middlewares(app: FastAPI) -> None:
+def init_middlewares(app: FastAPI) -> None:
     app.add_middleware(
         CORSMiddleware,
         allow_origins=["*"],
@@ -45,20 +41,15 @@ def add_middlewares(app: FastAPI) -> None:
 
 
 def init_routers(app: FastAPI) -> None:
-    app.include_router(nats_router)
-    app.include_router(image_router)
-    app.include_router(ws_router)
-    app.include_router(index_router)
-    app.include_router(minio_router)
-    app.include_router(health_router)
+    app.include_router(root_router)
 
 
 def create_app() -> FastAPI:
     lifespan = get_lifespan()
     app = FastAPI(lifespan=lifespan)
-    add_middlewares(app)
-    mount_styles(app)
-    # app = FastAPI()
+
+    init_middlewares(app)
+    init_styles(app)
     init_routers(app)
 
     return app

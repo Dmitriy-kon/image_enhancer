@@ -1,4 +1,4 @@
-from pprint import pprint
+from typing import Annotated
 
 from app.adapters.s3.s3_client import S3Client
 from app.adapters.ws.ws_client import webscocket_client
@@ -24,9 +24,7 @@ async def get_event(request: Request):
         return
 
     url = await s3_storage_out.get_url_for_file(filename)
+
     await ws.send_text(url)
     webscocket_client.remove_file(filename)
-    ws.close()
-    print(url)
-
-    # pprint(data.get("Records")[0].get("s3").get("object").get("key"))
+    await ws.close()

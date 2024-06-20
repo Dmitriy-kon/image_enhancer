@@ -11,6 +11,7 @@
 # faststream = { extras = ["nats"], version = "^0.5.10" }
 # aiobotocore = "^2.13.0"
 # dishka = "^1.2.0"
+# pillow = "^10.3.0"
 
 
 # [build-system]

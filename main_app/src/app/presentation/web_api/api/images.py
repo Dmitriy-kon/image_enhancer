@@ -1,11 +1,7 @@
-from pathlib import Path
 from typing import TYPE_CHECKING, Annotated
 
-from fastapi import APIRouter, Form, Request, UploadFile
-from nats.js.api import ObjectMeta
-
-if TYPE_CHECKING:
-    from faststream.nats.annotations import NatsBroker, ObjectStorage
+from app.application.put_file import PutImagetoBroker
+from fastapi import APIRouter, Depends, Form, Request, UploadFile
 
 image_router = APIRouter(tags=["text"], prefix="/image")
 
@@ -22,16 +18,21 @@ async def put_file(
     metadata: Annotated[str, Form()],
     file: UploadFile,
     request: Request,
+    interactor: Annotated[PutImagetoBroker, Depends()],
 ):
-    new_filename, old_filename = Path(filename), Path(file.filename)
-    new_filename = new_filename.with_suffix(old_filename.suffix).name
+    # broker: NatsBroker = request.state.broker
+    # await interactor(filename, metadata, file, request)
+    await interactor(filename, metadata, file, request)
 
-    file_data = await file.read()
-    broker: NatsBroker = request.state.broker
-    object_storage: ObjectStorage = await broker.object_storage(
-        bucket="storage", ttl=60
-    )
+    # new_filename, old_filename = Path(filename), Path(file.filename)
+    # new_filename = new_filename.with_suffix(old_filename.suffix).name
 
-    await object_storage.put(
-        name=new_filename, data=file_data, meta=ObjectMeta(headers=metadata)
-    )
+    # file_data = await file.read()
+    # broker: NatsBroker = request.state.broker
+    # object_storage: ObjectStorage = await broker.object_storage(
+    #     bucket="storage", ttl=60
+    # )
+
+    # await object_storage.put(
+    #     name=new_filename, data=file_data, meta=ObjectMeta(headers=metadata)
+    # )

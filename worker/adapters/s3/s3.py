@@ -74,3 +74,10 @@ class S3Client:
                 )
         except ClientError as e:
             print(f"Error getting url: {e}")
+
+s3_storage_inner = S3Client(
+    access_key="minioadmin",
+    secret_key="minioadmin",
+    endpoint_url="http://minio:9000",
+    bucket_name="storage",
+)
