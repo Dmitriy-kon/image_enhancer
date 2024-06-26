@@ -3,13 +3,14 @@ from typing import Annotated
 
 from app.adapters.s3.s3_client import S3Client
 from app.adapters.ws.ws_client import webscocket_client
+from app.main.config import config
 from fastapi import APIRouter, Request
 
 s3_storage_out = S3Client(
-    access_key="minioadmin",
-    secret_key="minioadmin",
-    endpoint_url="http://localhost:9000",
-    bucket_name="storage",
+    access_key=config.minio_config.access_key,
+    secret_key=config.minio_config.secret_key,
+    endpoint_url=config.minio_config.endpoint_url,
+    bucket_name=config.minio_config.bucket_name,
 )
 
 

@@ -51,6 +51,6 @@ class ImageDataScale:
     @staticmethod
     def create(width: int, height: int) -> "ImageDataScale":
         return ImageDataScale(width, height)
-    
+
     def __repr__(self) -> str:
         return f"ImageDataScale(width={self.width}, height={self.height})"

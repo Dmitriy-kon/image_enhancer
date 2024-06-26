@@ -4,6 +4,7 @@ import botocore
 from aiobotocore.session import get_session
 from botocore.config import Config
 from botocore.exceptions import ClientError
+from config import config
 
 
 class S3Client:
@@ -75,9 +76,10 @@ class S3Client:
         except ClientError as e:
             print(f"Error getting url: {e}")
 
+
 s3_storage_inner = S3Client(
-    access_key="minioadmin",
-    secret_key="minioadmin",
-    endpoint_url="http://minio:9000",
-    bucket_name="storage",
+    access_key=config.minio_config.access_key,
+    secret_key=config.minio_config.secret_key,
+    endpoint_url=config.minio_config.endpoint_url,
+    bucket_name=config.minio_config.bucket_name,
 )

@@ -1,7 +1,5 @@
-from contextlib import asynccontextmanager
-
 from app.presentation.web_api.api.root import root_router
-from app.presentation.web_api.broker.text import nats_router
+from app.presentation.web_api.broker.nats_router import nats_router
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
@@ -15,9 +13,9 @@ from fastapi.staticfiles import StaticFiles
 #         yield
 
 
-@nats_router.after_startup
-async def after_startup(app) -> None:
-    await nats_router.broker.object_storage(bucket="storage", ttl=60)
+# @nats_router.after_startup
+# async def after_startup(app) -> None:
+#     await nats_router.broker.object_storage(bucket="storage", ttl=60)
 
 
 def get_lifespan() -> None:

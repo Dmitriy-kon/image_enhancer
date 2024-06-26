@@ -1,5 +1,5 @@
+from collections.abc import AsyncIterable
 from contextlib import asynccontextmanager
-from typing import Annotated, AsyncIterable
 
 import botocore
 from aiobotocore.config import AioConfig

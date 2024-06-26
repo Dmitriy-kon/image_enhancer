@@ -9,6 +9,7 @@ class Image:
     convert_data: dict
 
     def get_updated_name(self, new_filename: str) -> str:
+        new_filename = new_filename.replace(" ", "_")
         new_filename, old_filename = Path(new_filename), Path(self.name)
         self.name = new_filename.with_suffix(old_filename.suffix).name
 

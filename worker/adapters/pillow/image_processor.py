@@ -2,7 +2,7 @@ import io
 
 from entities.image import Image
 from PIL import Image as Img
-from PIL import ImageOps, ImageEnhance
+from PIL import ImageEnhance, ImageOps
 
 
 class ImageProcessor:

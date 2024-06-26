@@ -2,6 +2,7 @@ import json
 from typing import TYPE_CHECKING
 
 from app.domain.entities import Image
+from app.main.config import config
 from fastapi import Request, UploadFile
 from nats.js.api import ObjectMeta
 
@@ -23,8 +24,9 @@ class PutImagetoBroker:
         file_data = await file.read()
 
         broker: NatsBroker = request.state.broker
+        
         object_storage: ObjectStorage = await broker.object_storage(
-            bucket="storage", ttl=60
+            bucket=config.nats_config.bucket_name, ttl=config.nats_config.ttl
         )
         print(image.name)
         await object_storage.put(

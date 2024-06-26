@@ -8,8 +8,6 @@ services:
       - 8000:8008
     env_file:
       - .env.prod
-    volumes:
-      - ./main_app:/app
     depends_on:
       - nats
     healthcheck:
@@ -26,8 +24,6 @@ services:
     command: faststream run main:app --reload
     ports:
       - 8001:8001
-    volumes:
-      - ./worker:/app
     env_file:
       - .env.prod
     depends_on:
@@ -41,9 +37,8 @@ services:
     image: minio/minio:latest
     container_name: minio
     command: minio server /data --console-address ":9001"
-    environment:
-      MINIO_ROOT_USER: minioadmin
-      MINIO_ROOT_PASSWORD: minioadmin
+    env_file:
+      - .env.prod
     ports:
       - "9000:9000"
       - "9001:9001"
@@ -57,7 +52,10 @@ services:
   minio_client:
     # image: minio/mc
     build: ./scripts/mc
-    container_name: minio_client
+    container_name: minio_mc
+    environment:
+      - MINIO_URL_HOOK=http://80.85.245.151:8000/minio-event
+    entrypoint: ./script.sh
     depends_on:
       - minio
     # entrypoint: >

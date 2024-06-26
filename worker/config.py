@@ -26,7 +26,7 @@ class MinioConfig:
     def from_env() -> "MinioConfig":
         access_key = getenv("ACCESS_KEY", "minioadmin")
         secret_key = getenv("SECRET_KEY", "minioadmin")
-        endpoint_url = getenv("MINIO_URL", "http://localhost:9000")
+        endpoint_url = getenv("MINIO_URL_INNER", "http://localhost:9000")
         bucket_name = getenv("BUCKET_NAME", "storage")
         return MinioConfig(access_key, secret_key, endpoint_url, bucket_name)
 

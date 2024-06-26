@@ -1,0 +1,118 @@
+version: "3.12"
+services:
+  python_external:
+    build: ./main_app
+    container_name: python_cont
+    command: uvicorn --factory app.main.main:create_app --reload --host 0.0.0.0 --port 8008
+    ports:
+      - 8000:8008
+    env_file:
+      - .env.local
+    depends_on:
+      - nats
+    volumes:
+      - ./main_app:/app
+    healthcheck:
+      test: curl --fail http://python_external/healthcheck
+      interval: 2s
+      retries: 4
+      # timeout: 10s
+    networks:
+      - mynetwork
+
+  worker:
+    build: ./worker
+    container_name: python_worker
+    command: faststream run main:app --reload
+    ports:
+      - 8001:8001
+    env_file:
+      - .env.local
+    volumes:
+      - ./worker:/app
+    depends_on:
+      - nats
+      - python_external
+      - minio_client
+    networks:
+      - mynetwork
+
+  minio:
+    image: minio/minio:latest
+    container_name: minio
+    command: minio server /data --console-address ":9001"
+    env_file:
+      - .env.local
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - data1:/data
+    # depends_on:
+    #   - python_external
+    networks:
+      - mynetwork
+
+  minio_client:
+    # image: minio/mc
+    build: ./scripts/mc
+    container_name: minio_mc
+    environment:
+      - MINIO_URL_HOOK=http://host.docker.internal:8000/minio-event
+    entrypoint: ["/script.sh", "http://host.docker.internal:8000/minio-event"]
+    # entrypoint: ["/script.sh", "${MINIO_URL_HOOK}"]
+    depends_on:
+      - minio
+
+    # entrypoint: >
+    #   /bin/sh -c "
+    #   sleep 5;
+    #   /usr/bin/mc alias set myminio http://minio:9000 minioadmin minioadmin;
+    #   /usr/bin/mc mb myminio/storage;
+    #   /usr/bin/mc anonymous set public myminio/storage;
+    #   /usr/bin/mc admin config set myminio/ notify_webhook:primary endpoint="http://host.docker.internal:8000/minio-event" queue_limit="10";
+    #   /usr/bin/mc admin service restart myminio;
+    #   /usr/bin/mc event add myminio/storage arn:minio:sqs::primary:webhook --event put;
+    #   exit 0;
+    #   "
+    networks:
+      - mynetwork
+
+    # rabbit:
+    #   image: rabbitmq:3.13-management
+    #   # image: rabbitmq:alpine
+    #   container_name: rabbit
+    #   ports:
+    #     - 15672:15672
+    #     - 5672:5672
+    #   volumes:
+    #     - rabbit:/var/lib/rabbitmq
+    #   healthcheck:
+    #     test: rabbitmq-diagnostics -q ping
+    #     interval: 10s
+    #     timeout: 20s
+    #     retries: 3
+  nats:
+    image: nats:latest
+    # command: --js --debug --trace --sd /data -p 4222 -m 8222
+    command: -js --sd /data -p 4222 -m 8222
+    ports:
+      - 4222:4222
+      - 8222:8222
+    # volumes:
+    #   - jetstream:/data
+    # healthcheck:
+    #   test: curl --fail http://localhost:8222/ || exit 1
+    #   interval: 10s
+    #   timeout: 20s
+    #   retries: 3
+    networks:
+      - mynetwork
+
+volumes:
+  rabbit:
+  data1:
+  # jetstream:
+networks:
+  mynetwork:
+    driver: bridge

@@ -1,13 +1,21 @@
 import asyncio
 from typing import Annotated
 
+from app.main.config import config
 from fastapi import Depends
 from faststream.nats import JStream, ObjWatch
 from faststream.nats.annotations import ObjectStorage
 from faststream.nats.fastapi import NatsRouter
 
-nats_router = NatsRouter("nats://nats:4222")
+nats_router = NatsRouter(config.nats_config.broker_url)
 broker = nats_router.broker
+
+
+@nats_router.after_startup
+async def after_startup(app) -> None:
+    await nats_router.broker.object_storage(
+        bucket=config.nats_config.bucket_name, ttl=config.nats_config.ttl
+    )
 
 
 # @nats_router.subscriber(stream="stream", subject="texter", deliver_policy="new")

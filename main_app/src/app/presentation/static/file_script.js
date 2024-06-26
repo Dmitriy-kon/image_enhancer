@@ -51,6 +51,7 @@ document.addEventListener("DOMContentLoaded", function () {
       });
 
     let ws = new WebSocket(
+      // "ws://80.85.245.151:8000/ws/file/?filename=" +
       "ws://localhost:8000/ws/file/?filename=" +
         encodeURIComponent(`${newFilename}:${oldFilename}`)
     );
