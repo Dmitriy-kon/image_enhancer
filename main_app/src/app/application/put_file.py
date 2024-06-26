@@ -26,7 +26,7 @@ class PutImagetoBroker:
         object_storage: ObjectStorage = await broker.object_storage(
             bucket="storage", ttl=60
         )
-
+        print(image.name)
         await object_storage.put(
             name=image.name, data=file_data, meta=ObjectMeta(headers=image.convert_data)
         )

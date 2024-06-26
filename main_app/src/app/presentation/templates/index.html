@@ -19,19 +19,77 @@
           />
           <input type="file" id="file" accept="image/*" required />
           <div class="flex flex-col justify-between px-1 gap-3 content-center">
-          <div class="flex flex-row gap-4 text-base font-semibold">
-            <label for="grayscale">Grayscale</label>
-            <input type="checkbox" id="grayscale" />
-          </div>
-          <div class="flex flex-row gap-4 justify-between content-center ">
-            <div class="flex gap-4 items-center text-base font-semibold">
-              <label for="proportional">Пропорционально</label>
-              <input type="checkbox" id="proportional" />
+            <div class="flex flex-row gap-4 text-base font-semibold">
+              <label for="grayscale">Grayscale</label>
+              <input type="checkbox" id="grayscale" />
             </div>
-            <input class="px-3 py-1 w-40 outline-1 outline-[#615fe7] border-2 rounded border-solid border-[#d3e2f4]" type="number" id="scaleWidth" placeholder="Ширина" required />
-            <input class="px-3 py-1 w-40 outline-1 outline-[#615fe7] border-2 rounded border-solid border-[#d3e2f4]"  type="number" id="scaleHeight" placeholder="Высота" required />
-          </div>
-          <input class="px-3 py-1 w-40 outline-1 outline-[#615fe7] border-2 rounded border-solid border-[#d3e2f4]"  type="number" id="saturation" placeholder="Насыщенность" required />
+            <div class="flex flex-row gap-4 justify-between content-center">
+              <div class="flex gap-4 items-center text-base font-semibold">
+                <label for="proportional">Пропорционально</label>
+                <input type="checkbox" id="proportional" />
+              </div>
+              <input
+                class="px-3 py-1 w-40 outline-1 outline-[#615fe7] border-2 rounded border-solid border-[#d3e2f4]"
+                type="number"
+                id="scaleWidth"
+                placeholder="Ширина"
+                min="0"
+                required
+              />
+              <input
+                class="px-3 py-1 w-40 outline-1 outline-[#615fe7] border-2 rounded border-solid border-[#d3e2f4]"
+                type="number"
+                id="scaleHeight"
+                placeholder="Высота"
+                min="0"
+                required
+              />
+            </div>
+            <div
+              class="flex flex-row gap-4 justify-between content-center text-base font-semibold mt-2"
+            >
+              <div class="flex flex-col gap-2 items-center">
+                <label for="saturation">Насыщенность</label>
+                <input
+                  class="px-3 py-1 w-40 outline-1 outline-[#615fe7] border-2 rounded border-solid border-[#d3e2f4] text-center"
+                  type="number"
+                  id="saturation"
+                  placeholder="Насыщенность"
+                  value="0"
+                  min="0"
+                  max="200"
+                  required
+                />
+              </div>
+
+              <div class="flex flex-col gap-2 items-center">
+                <label for="saturation">Контраст</label>
+                <input
+                  class="px-3 py-1 w-40 outline-1 outline-[#615fe7] border-2 rounded border-solid border-[#d3e2f4] text-center"
+                  type="number"
+                  id="contrast"
+                  placeholder="Контраст"
+                  value="0"
+                  min="0"
+                  max="100"
+                  required
+                />
+              </div>
+
+              <div class="flex flex-col gap-2 items-center">
+                <label for="saturation">Яркость</label>
+                <input
+                  class="px-3 py-1 w-40 outline-1 outline-[#615fe7] border-2 rounded border-solid border-[#d3e2f4] text-center"
+                  type="number"
+                  id="brightness"
+                  placeholder="Яркость"
+                  value="0"
+                  min="0"
+                  max="100"
+                  required
+                />
+              </div>
+            </div>
           </div>
           <div id="mybuttons" class="flex flex-row justify-between px-1">
             <button type="submit" id="send">Отправить</button>

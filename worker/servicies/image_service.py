@@ -27,9 +27,14 @@ class ImageService:
                 )
             if image.convert_data.saturation:
                 ims.add_saturation(image.convert_data.saturation)
+            if image.convert_data.contrast:
+                ims.add_contrast(image.convert_data.contrast)
+            if image.convert_data.brightness:
+                ims.add_brightness(image.convert_data.brightness)
             res_image = ims.save()
 
         return res_image
 
     async def put_image(self, image: Image):
+        print(image.name)
         await s3_storage_inner.upload_file(image.name, image.data)

@@ -6,6 +6,8 @@ services:
     command: uvicorn --factory app.main.main:create_app --reload --host 0.0.0.0 --port 8008
     ports:
       - 8000:8008
+    env_file:
+      - .env.prod
     volumes:
       - ./main_app:/app
     depends_on:
@@ -26,6 +28,8 @@ services:
       - 8001:8001
     volumes:
       - ./worker:/app
+    env_file:
+      - .env.prod
     depends_on:
       - nats
       - python_external

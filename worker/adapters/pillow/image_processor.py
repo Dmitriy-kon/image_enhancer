@@ -26,7 +26,18 @@ class ImageProcessor:
 
     def add_saturation(self, factor: int) -> int:
         factor = factor / 100 + 1
+
         self.img = ImageEnhance.Color(self.img).enhance(factor=factor)
+
+    def add_contrast(self, factor: int) -> int:
+        factor = factor / 100 + 1
+
+        self.img = ImageEnhance.Contrast(self.img).enhance(factor=factor)
+
+    def add_brightness(self, factor: int) -> int:
+        factor = factor / 100 + 1
+
+        self.img = ImageEnhance.Brightness(self.img).enhance(factor=factor)
 
     def save(self) -> Image:
         byte_array = io.BytesIO()
